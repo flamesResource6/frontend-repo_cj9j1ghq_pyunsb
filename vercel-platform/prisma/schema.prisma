@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  hashed_password String
+  name          String?
+  role          String   @default("member")
+  created_at    DateTime @default(now())
+  last_login    DateTime?
+  teams         Team[]   @relation("UserTeams")
+  memberships   TeamMember[]
+  projects      Project[] @relation("UserProjects")
+  tokens        ApiToken[]
+}
+
+model Team {
+  id         String   @id @default(cuid())
+  name       String
+  slug       String   @unique
+  owner_id   String
+  owner      User     @relation(fields: [owner_id], references: [id])
+  created_at DateTime @default(now())
+  members    TeamMember[]
+  projects   Project[]
+}
+
+model TeamMember {
+  id       String @id @default(cuid())
+  team     Team   @relation(fields: [team_id], references: [id])
+  team_id  String
+  user     User   @relation(fields: [user_id], references: [id])
+  user_id  String
+  role     String @default("member")
+}
+
+model Project {
+  id               String      @id @default(cuid())
+  slug             String      @unique
+  name             String
+  team_id          String?
+  team             Team?       @relation(fields: [team_id], references: [id])
+  owner_id         String
+  owner            User        @relation("UserProjects", fields: [owner_id], references: [id])
+  created_at       DateTime    @default(now())
+  latest_deploy_id String?
+  deployments      Deployment[]
+  domains          Domain[]
+  activity         Activity[]
+}
+
+model Deployment {
+  id          String   @id @default(cuid())
+  project     Project  @relation(fields: [project_id], references: [id])
+  project_id  String
+  status      String   @default("success")
+  commit_sha  String?
+  branch      String?
+  created_at  DateTime @default(now())
+  url         String?
+  metadata    Json?
+}
+
+model Domain {
+  id         String   @id @default(cuid())
+  project    Project  @relation(fields: [project_id], references: [id])
+  project_id String
+  domain     String   @unique
+  verified   Boolean  @default(false)
+  created_at DateTime @default(now())
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  actor       User     @relation(fields: [actor_id], references: [id])
+  actor_id    String
+  project     Project? @relation(fields: [project_id], references: [id])
+  project_id  String?
+  action      String
+  metadata    Json?
+  created_at  DateTime @default(now())
+}
+
+model ApiToken {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [user_id], references: [id])
+  user_id     String
+  name        String
+  token_hash  String
+  scopes      String
+  created_at  DateTime @default(now())
+  expires_at  DateTime?
+}
+
+model Invoice {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    String
+  amount     Int
+  status     String
+  created_at DateTime  @default(now())
+}

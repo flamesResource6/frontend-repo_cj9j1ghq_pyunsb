@@ -1,0 +1,11 @@
+@tailwind base;@tailwind components;@tailwind utilities;
+html,body{background:var(--bg-dusk);color:var(--text-primary)}
+:root{--radius:18px}
+.container-glass{border-radius:var(--radius)}
+/* Typography utility classes */
+.display{font-size:var(--display-size);font-weight:var(--display-weight)}
+.h1{font-size:var(--h1-size);font-weight:var(--h1-weight)}
+.h2{font-size:var(--h2-size);font-weight:var(--h2-weight)}
+.body{font-size:var(--body-size);font-weight:var(--body-weight)}
+.small{font-size:var(--small-size);font-weight:var(--small-weight)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:var(--mono-size);font-weight:var(--mono-weight)}

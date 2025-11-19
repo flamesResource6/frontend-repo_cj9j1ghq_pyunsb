@@ -1,0 +1,18 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Glass Platform API", "version": "0.1.0" },
+  "paths": {
+    "/api/auth/register": { "post": { "summary": "Register user", "responses": { "200": { "description": "ok" } } } },
+    "/api/auth/login": { "post": { "summary": "Login", "responses": { "200": { "description": "ok" } } } },
+    "/api/users/me": { "get": { "summary": "Profile", "responses": { "200": { "description": "ok" } } } },
+    "/api/projects": { "get": { "summary": "List projects" }, "post": { "summary": "Create project" } },
+    "/api/projects/{id}": { "get": { "summary": "Get project" }, "patch": { "summary": "Update" }, "delete": { "summary": "Delete" } },
+    "/api/deployments": { "get": { "summary": "List deployments" }, "post": { "summary": "Trigger deployment" } },
+    "/api/deployments/logs": { "get": { "summary": "Tail logs" } },
+    "/api/domains": { "get": { "summary": "List domains" }, "post": { "summary": "Add domain" } },
+    "/api/teams": { "get": { "summary": "List teams" }, "post": { "summary": "Create team" } },
+    "/api/teams/members": { "post": { "summary": "Add member" } },
+    "/api/integrations/github": { "get": { "summary": "Mock OAuth start" } },
+    "/api/billing/invoices": { "get": { "summary": "List invoices" } }
+  }
+}

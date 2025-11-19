@@ -1,0 +1,35 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: app
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+        working-directory: vercel-platform
+      - run: npx prisma generate
+        working-directory: vercel-platform
+      - run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/app
+        working-directory: vercel-platform
+      - run: npm run build
+        working-directory: vercel-platform
+      - run: npm run test --if-present
+        working-directory: vercel-platform
+      - run: npx playwright install --with-deps
+        working-directory: vercel-platform
+      - run: npm run test:e2e --if-present
+        working-directory: vercel-platform
